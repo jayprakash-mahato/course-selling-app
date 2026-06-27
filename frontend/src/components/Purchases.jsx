@@ -111,10 +111,14 @@ const Purchases = () => {
 
             <li>
               {isLoggedIn ? (
-                <button className="flex items-center" onClick={handleLogout}>
+                <a
+                  href="/"
+                  className="flex items-center"
+                  onClick={handleLogout}
+                >
                   <IoLogOut className="mr-2"></IoLogOut>
                   Logout
-                </button>
+                </a>
               ) : (
                 <Link to="/login" className="flex items-center">
                   <IoLogIn className="mr-2"></IoLogIn>

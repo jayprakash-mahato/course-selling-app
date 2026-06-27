@@ -39,7 +39,7 @@ export const App = () => {
         <Route path="/admin/login" element={<AdminLogin></AdminLogin>}></Route>
         <Route
           path="/admin/dashboard"
-          element={admin?<Dashboard></Dashboard>:<Navigate to={"/admin/dashboard"}></Navigate>}
+          element={admin?<Dashboard></Dashboard>:<Navigate to={"/admin/login"}></Navigate>}
         ></Route>
         <Route
           path="/admin/create-course"

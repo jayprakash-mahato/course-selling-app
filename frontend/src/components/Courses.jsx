@@ -15,6 +15,7 @@ const Courses = () => {
   const [courses, setCourses] = useState([]);
   const [isLoggedIn, setIsLoggedIn] = useState([false]);
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
 
   console.log("courses:", courses);
 
@@ -30,10 +31,11 @@ const Courses = () => {
   const handleLogout = async () => {
     try {
       const response = axios.get(
-        `${import.meta.env.Vite_BACKEND_URL}/user/logout`,
+        // `${import.meta.env.Vite_BACKEND_URL}/user/logout`,
+        "http://localhost:4001/api/v1/user/logout",
         {
           withCredentials: true,
-        }
+        },
       );
       toast.success((await response).data.message);
       localStorage.removeItem("user");
@@ -49,8 +51,9 @@ const Courses = () => {
     const fetcCourses = async () => {
       try {
         const response = await axios.get(
-          `${import.meta.env.VITE_BACKEND_URL}/api/v1/course/courses`,
-          { withCredentials: true }
+          // `${import.meta.env.VITE_BACKEND_URL}/api/v1/course/courses`,
+          "http://localhost:4001/api/v1/course/courses",
+          { withCredentials: true },
         );
         console.log(response.data.courses);
         setCourses(response.data.courses);
@@ -142,7 +145,7 @@ const Courses = () => {
 
       {/* main Content  */}
 
-      <main className="ml-[20%] w-[80%] bg-white p-10">
+      <main className="ml-[15%] w-[85%] h-screen bg-white p-10">
         <header className="flex justify-between items-center mb-10">
           <h1 className="text-xl font-bold"> Courses </h1>
           <div className="flex items-center space-x-3">
@@ -150,6 +153,8 @@ const Courses = () => {
               <input
                 type="text"
                 placeholder="type here to search"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
                 className="border border-gray-300 rounded-l-full px-4 py-2 focus:outline-none"
               ></input>
               <button className="h-10 border border-gray-300 rounded-r-full px-4 py-2 flex items-center justify-center">
@@ -167,46 +172,56 @@ const Courses = () => {
         <div className="overflow-y-auto h-[75vh]">
           {loading ? (
             <p className="text-center text-gray-500">Loading...</p>
-          ) : courses.length === 0 ? (
+          ) : courses.filter((course) =>
+              course.title.toLowerCase().includes(searchQuery.toLowerCase()),
+            ).length === 0 ? (
             <p className="text-center text-gray-500">
               {" "}
-              No course Posted Yet By Admin
+              {searchQuery
+                ? "No courses found matching your search"
+                : "No course Posted Yet By Admin"}
             </p>
           ) : (
             <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
-              {courses.map((course) => (
-                <div
-                  key={course._id}
-                  className="border border-grey-200 rounded-lg p-4 shadow-sm"
-                >
-                  <img
-                    src={course.image.url}
-                    alt={course.title}
-                    className="rounded mb-4"
-                  ></img>
-                  <h2 className="font-bold text-lg mb-2">{course.title}</h2>
-                  <p className="text-gray-600 mb-4">
-                    {course.description.length > 100
-                      ? `${course.description.slice(0, 100)}...`
-                      : course.description}
-                  </p>
-                  <div className="flex justify-between items-center mb-4">
-                    <span className="font-bold text-xl">
-                      ₹{course.price}{" "}
-                      <span className="text-gray-500 line-through">5999</span>
-                    </span>
-                    <span className="text-green-600">20% off</span>
-                  </div>
-
-                  {/* BUY PAGE */}
-                  <Link
-                    to={`/buy/${course._id}`}
-                    className="bg-orange-500 w-full text-white px-4 py-2 rounded-lg hover:bg-blue-900 duration-300"
+              {courses
+                .filter((course) =>
+                  course.title
+                    .toLowerCase()
+                    .includes(searchQuery.toLowerCase()),
+                )
+                .map((course) => (
+                  <div
+                    key={course._id}
+                    className="border border-grey-200 rounded-lg p-4 shadow-sm"
                   >
-                    Buy Now
-                  </Link>
-                </div>
-              ))}
+                    <img
+                      src={course.image.url}
+                      alt={course.title}
+                      className="rounded mb-4"
+                    ></img>
+                    <h2 className="font-bold text-lg mb-2">{course.title}</h2>
+                    <p className="text-gray-600 mb-4">
+                      {course.description.length > 100
+                        ? `${course.description.slice(0, 100)}...`
+                        : course.description}
+                    </p>
+                    <div className="flex justify-between items-center mb-4">
+                      <span className="font-bold text-xl">
+                        ₹{course.price}{" "}
+                        <span className="text-gray-500 line-through">5999</span>
+                      </span>
+                      <span className="text-green-600">20% off</span>
+                    </div>
+
+                    {/* BUY PAGE */}
+                    <Link
+                      to={`/buy/${course._id}`}
+                      className="bg-orange-500 w-full text-white px-4 py-2 rounded-lg hover:bg-blue-900 duration-300"
+                    >
+                      Buy Now
+                    </Link>
+                  </div>
+                ))}
             </div>
           )}
         </div>

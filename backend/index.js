@@ -4,15 +4,15 @@ import mongoose from "mongoose";
 import { v2 as cloudinary } from 'cloudinary';
 import courseRoute from "./routes/course.route.js";
 import userRoute from "./routes/user.route.js";
-import adminRoute from "./routes/admin.route.js"
+import adminRoute from "./routes/admin.route.js";
 import fileUpload from 'express-fileupload';
 import cookieParser from 'cookie-parser';
 import cors from "cors";
 
-
+// step 1
 const app = express();
-
 dotenv.config();
+
 
 // MIDDLEWARE
 app.use(express.json());
@@ -24,7 +24,8 @@ app.use(fileUpload({
 
 app.use(
     cors({
-         origin: process.env.FRONTEND_URL?.trim(),
+         origin: process.env.FRONTEND_URL,
+        //  origin: process.env.FRONTEND_URL?.trim(),
         credentials: true,
         methods: ["GET", "POST", "PUT", "DELETE"],
         allowedHeaders: ["Content-Type", "Authorization"],
@@ -32,7 +33,7 @@ app.use(
 );
 
 
-
+// step 2
 const port = process.env.PORT || 3000;
 const DB_URI = process.env.MONGO_URI;
 
@@ -43,12 +44,6 @@ try {
     console.log(error);
 }
 
-
-// DEFINING ROUTES
-
-// app.get('/', (req, res) => {
-//     res.send('Hello World!')
-//   })
 
 
 

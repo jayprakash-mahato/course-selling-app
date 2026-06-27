@@ -43,7 +43,10 @@ const handleCreateCourse=async(e)=>{
   }
 
   try {
-    const response =await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/v1/course/create`,formData,{
+    const response =await axios.post(
+      // `${import.meta.env.VITE_BACKEND_URL}/api/v1/course/create`,formData,
+      "http://localhost:4001/api/v1/course/create",formData,
+      {
       headers:{
         Authorization:`Bearer ${token}`
       },
@@ -68,7 +71,7 @@ const handleCreateCourse=async(e)=>{
 
   return (
     <div>
-      <div className="min-h-screen  py-10">
+      <div className="min-h-screen bg-gray-300 py-10">
         <div className="max-w-4xl mx-auto p-6 border  rounded-lg shadow-lg">
           <h3 className="text-2xl font-semibold mb-8">Create Course</h3>
 

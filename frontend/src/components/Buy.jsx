@@ -9,16 +9,11 @@ const Buy = () => {
   const { courseId } = useParams();
   const [loading, setLoading] = useState(false);
   
-  
-
   const navigate = useNavigate();
 
   const user = JSON.parse(localStorage.getItem("user"));
   const token = user?.token;
 
-
-
-  
 
   const handlePurchase = async () => {
     
@@ -31,7 +26,8 @@ const Buy = () => {
     try {
       setLoading(true);
       const response = await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL}/api/v1/course/buy/${courseId}`,
+        // `${import.meta.env.VITE_BACKEND_URL}/api/v1/course/buy/${courseId}`,
+        `http://localhost:4001/api/v1/course/buy/${courseId}`,
         {},
         {
           headers: {

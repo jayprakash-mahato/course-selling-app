@@ -37,7 +37,8 @@ const Home = () => {
   const handleLogout = async () => {
     try {
       const response = axios.get(
-        `${import.meta.env.Vite_BACKEND_URL}/user/logout`,
+        // `${import.meta.env.Vite_BACKEND_URL}/user/logout`,
+        "http://localhost:4001/api/v1/user/logout",
         {
           withCredentials: true,
         }
@@ -72,12 +73,12 @@ const Home = () => {
   };
 
   useEffect(() => {
-
-    
+ 
     const fetcCourses = async () => {
       try {
         const response = await axios.get(
-          `${import.meta.env.VITE_BACKEND_URL}/api/v1/course/courses`
+          // `${import.meta.env.VITE_BACKEND_URL}/api/v1/course/courses`
+        "http://localhost:4001/api/v1/course/courses"
           ,
           // { withCredentials: true }
           {
@@ -133,110 +134,79 @@ const Home = () => {
   };
 
   return (
-    <div className="bg-gradient-to-r from-black to-blue-950 ">
-      <div className="h-screen text-white container mx-auto py-6">
+    <div className="bg-gradient-to-r from-black to-blue-950 h-screen">
+      <div className="h-screen text-white container mx-auto ">
         {/* Header */}
-        <header className="flex items-center justify-between ">
-          {/* LEFT DIV */}
-          <div className="flex items-center space-x-2">
-            <Link to={"/"}>
-              <img src={logo} alt="" className="w-30 h-11 rounded-full" />
-            </Link>
+      <header className="flex flex-col md:flex-row items-center justify-between px-4 py-4 gap-4 md:gap-0">
+  {/* LEFT DIV */}
+  <div className="flex items-center space-x-2">
+    <Link to={"/"}>
+      <img src={logo} alt="logo" className="w-10 h-10 rounded-full" />
+    </Link>
+    <h1 className="text-xl md:text-2xl text-orange-500 font-bold">
+      TechCourses
+    </h1>
+  </div>
 
-            <h1 className="text-2xl text-orange-500 font-bold">TechCourses</h1>
-          </div>
+  {/* RIGHT DIV */}
+  {isLoggedIn || isLoggedInAdmin ? (
+    <div className="flex flex-col md:flex-row items-center gap-2 md:gap-4">
+      <button
+        onClick={isLoggedIn ? handleLogout : handleLogoutAdmin}
+        className="text-sm md:text-base bg-transparent text-white px-4 py-2 border border-white rounded hover:bg-white hover:text-black font-bold"
+      >
+        Logout
+      </button>
+      {isLoggedInAdmin && (
+        <Link
+          to="/admin/Dashboard"
+          className="text-sm md:text-base bg-transparent text-white px-4 py-2 border border-white rounded hover:bg-white hover:text-black font-bold"
+        >
+          Admin Dashboard
+        </Link>
+      )}
+    </div>
+  ) : (
+    <div className="flex flex-col md:flex-row items-center gap-2 md:gap-4">
+      <Link
+        to={"/admin/login"}
+        className="text-sm md:text-base bg-transparent text-white px-4 py-2 border border-white rounded hover:bg-white hover:text-black font-bold"
+      >
+        Admin Login
+      </Link>
+      <Link
+        to={"/login"}
+        className="text-sm md:text-base bg-transparent text-white px-4 py-2 border border-white rounded hover:bg-white hover:text-black font-bold"
+      >
+        Login
+      </Link>
+      <Link
+        to={"/signup"}
+        className="text-sm md:text-base bg-transparent text-white px-4 py-2 border border-white rounded hover:bg-white hover:text-black font-bold"
+      >
+        Signup
+      </Link>
+    </div>
+  )}
+</header>
 
-          {/* RIGHT DIV  */}
-
-          {/* updated code */}
-
-          {isLoggedIn || isLoggedInAdmin ? (
-            <div className="space-x-4">
-              <button
-                onClick={isLoggedIn ? handleLogout : handleLogoutAdmin}
-                className="bg-transparent text-white px-4 py-2 border border-white rounded hover:bg-white hover:text-black font-bold"
-              >
-                Logout
-              </button>
-              {isLoggedInAdmin && (
-                <Link
-                  to="/admin/Dashboard"
-                  className="bg-transparent text-white px-4 py-2 border border-white rounded hover:bg-white hover:text-black font-bold"
-                >
-                  Admin Dashboard
-                </Link>
-              )}
-            </div>
-          ) : (
-            <>
-              <div className="space-x-4">
-                <Link
-                  to={"/admin/login"}
-                  className="bg-transparent text-white px-2 py-2 border border-white rounded hover:bg-white hover:text-black font-bold"
-                >
-                  Admin Login
-                </Link>
-                <Link
-                  to={"/login"}
-                  className="bg-transparent text-white px-2 py-2 border border-white rounded hover:bg-white hover:text-black font-bold"
-                >
-                  Login
-                </Link>
-                <Link
-                  to={"/signup"}
-                  className="bg-transparent text-white px-2 py-2 border border-white rounded hover:bg-white hover:text-black font-bold"
-                >
-                  Signup
-                </Link>
-              </div>
-            </>
-          )}
-
-          {/* updated code */}
-          {/* {isLoggedInAdmin ? (
-              <button onClick={handleLogoutAdmin}
-                className="bg-transparent text-white px-4 py-2 border border-white rounded hover:bg-white hover:text-black font-bold"
-              >
-                Logout
-              </button>
-            ) : (
-              <>
-                <Link
-                  to={"/admin/login"}
-                  className="bg-transparent text-white px-4 py-2 border border-white rounded hover:bg-white hover:text-black font-bold"
-                >
-                 Admin Login
-                </Link>
-                <Link
-                  to={"/login"}
-                  className="bg-transparent text-white px-4 py-2 border border-white rounded hover:bg-white hover:text-black font-bold"
-                >
-                  Login
-                </Link>
-                <Link
-                  to={"/signup"}
-                  className="bg-transparent text-white px-4 py-2 border border-white rounded hover:bg-white hover:text-black font-bold"
-                >
-                  Signup
-                </Link>
-              </>
-            )} */}
-        </header>
 
         {/* Main Section */}
 
         {/* SECTION I */}
         <section className="text-center py-20">
-          <marquee
+          <div className="marq md:w-1420">
+            {/* <marquee
             direction="left"
-            width="1550px"
+            // width="145px"
             height="35px"
             scrollamount="12"
             className="bg-green-500 text-red-700 font-bold flex items-center"
           >
             Hello Guys This project is in development phase .Regular Updates
             Will Come Back to Back
-          </marquee>
+          </marquee> */}
+          </div>
           <h2 className="text-5xl font-semibold text-orange-500">
             #TechCourses
           </h2>
@@ -277,9 +247,9 @@ const Home = () => {
                       <h2 className="text-white text-xl font-bold">
                         {course.title}
                       </h2>
-                      <button className="mt-4 bg-orange-500 py-2 px-4 rounded-full hover:bg-blue-500 duration-300">
+                      <Link to={"/courses"} className="mt-4 bg-orange-500 py-2 px-4 rounded-full hover:bg-blue-500 duration-300">
                         Enroll Now
-                      </button>
+                      </Link>
                     </div>
                   </div>
                 </div>
@@ -290,7 +260,7 @@ const Home = () => {
 
         <hr></hr>
         {/* Footer */}
-        <footer className="my-8">
+        <footer className="  py-4 bg-gradient-to-r from-black to-blue-950">
           <div className="grid grid-cols-1 md:grid-cols-3">
             {/* LEFT DIV  */}
             <div className="flex flex-col items-center md:items-start">

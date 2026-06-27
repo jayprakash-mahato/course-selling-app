@@ -1,111 +1,112 @@
-import axios from 'axios'
-import React, { useEffect, useState } from 'react'
-import toast from 'react-hot-toast'
-import { useNavigate, useParams } from 'react-router-dom'
-
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import toast from "react-hot-toast";
+import { useNavigate, useParams } from "react-router-dom";
+// import dotenv from "dotenv";
 
 const UpdateCourse = () => {
+  const { id } = useParams();
 
-const {id}=useParams()
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [price, setPrice] = useState("");
+  const [image, setImage] = useState("");
+  const [imagePreview, setImagePreview] = useState("");
+  const [loading, setLoading] = useState(true);
 
+  const navigate = useNavigate();
 
-const [title,setTitle]=useState("")
-const [description,setDescription]=useState("")
-const [price,setPrice]=useState("")
-const [image,setImage]=useState("")
-const [imagePreview,setImagePreview]=useState("")
-const [loading,setLoading] = useState(true)
+  useEffect(() => {
+    const fetchCourseData = async () => {
+      try {
+        const { data } = await axios.get(
+          // `${import.meta.env.VITE_BACKEND_URL}/course/${id}`,
+          `http://localhost:4001/api/v1/course/${id}`,
+          {
+            withCredentials: true,
+          }
+        );
+        console.log(data);
+        setTitle(data.course.title);
+        setDescription(data.course.description);
+        setPrice(data.course.price);
+        setImagePreview(data.course.image.url);
+        setLoading(false);
+      } catch (error) {
+        console.log(error);
+        toast.error("failed to fetch course data", error);
+        setLoading(false);
+      }
+    };
+    fetchCourseData();
+  }, [id]);
 
-const navigate = useNavigate()
+  const changePhotoHandler = (e) => {
 
-useEffect(() => {
-  const fetchCourseData = async()=>{
-    try {
-      const {data} = await axios.get(
-        `${import.meta.env.VITE_BACKEND_URL}/course/${id}`,
-        {
-          withCredentials:true,
-        }
-      );
-      console.log(data);
-      setTitle(data.course.title)
-      setDescription(data.course.description)
-      setPrice(data.course.price)
-      setImagePreview(data.course.image.url)
-      setLoading(false)
-      
-    } catch (error) {
-      console.log(error)
-      toast.error("failed to fetch course data",error)
-      setLoading(false)
+    
+    const file = e.target.files[0];
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => {
+      setImagePreview(reader.result);
+      setImage(file);
+    };
+  };
+
+  const handleUpdateCourse = async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData();
+    formData.append("title", title);
+    formData.append("description", description);
+    formData.append("price", price);
+
+    if (image) {
+      formData.append("image", image);
     }
 
+    const admin = JSON.parse(localStorage.getItem("admin"));
+    const token = admin?.token;
+
+    if (!token) {
+      navigate("/admin/login");
+      return;
+    }
+
+
+    try {
+     
+      const response = await axios.put(
+        `${import.meta.env.VITE_BACKEND_URL}/api/v1/course/update/${id}`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          withCredentials: true,
+        }
+      );
+      console.log(response.data);
+      toast.success(response.data.message || "Course Updated Successfully");
+      navigate("/admin/our-courses");
+      setTitle("");
+      setPrice("");
+      setImage("");
+      setDescription("");
+      setImagePreview("");
+    } catch (error) {
+      console.log(error);
+      toast.error(error.response.data.errors);
+    }
+  };
+
+  if (loading) {
+    return <p className="text-center text-gray-500">Loading...</p>;
   }
-  fetchCourseData();
-}, [id])
-
-
-const changePhotoHandler=(e)=>{
-  const file=e.target.files[0]
-  const reader = new FileReader()
-  reader.readAsDataURL(file)
-  reader.onload=()=>{
-    setImagePreview(reader.result)
-    setImage(file)
-
-  }
-}
-
-const handleUpdateCourse=async(e)=>{
-  e.preventDefault()
-
-  const formData = new FormData()
-  formData.append("title",title)
-  formData.append("description",description)
-  formData.append("price",price)
-  
-  if(image){formData.append("image",image)}
-
-  const admin =JSON.parse(localStorage.getItem("admin"))
-  const token = admin.token;
-
-
-  if(!token){
-    navigate("/admin/login")
-    return;
-  }
-
-  try {
-    const response =await axios.put(`${import.meta.env.VITE_BACKEND_URL}/api/v1/course/update/${id}`,formData,{
-      headers:{
-        Authorization:`Bearer ${token}`
-      },
-      withCredentials:true
-    })
-    console.log(response.data);
-    toast.success( response.data.message ||"Course Updated Successfully")
-    navigate("/admin/our-courses")
-    setTitle("")
-    setPrice("")
-    setImage("")
-    setDescription("")
-    setImagePreview("")
-    
-  } catch (error) {
-    console.log(error);
-    toast.error(error.response.data.errors)
-    
-  }
-}
-
-
-if (loading) {
-  return <p className="text-center text-gray-500">Loading...</p>;
-}
 
   return (
     <div>
-      <div className="min-h-screen py-10">
+      <div className="min-h-screen py-10 bg-gray-300">
         <div className="max-w-4xl mx-auto p-6 border rounded-lg shadow-lg">
           <h3 className="text-2xl font-semibold mb-8">Update Course</h3>
           <form onSubmit={handleUpdateCourse} className="space-y-6">
@@ -168,7 +169,7 @@ if (loading) {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default UpdateCourse
+export default UpdateCourse;

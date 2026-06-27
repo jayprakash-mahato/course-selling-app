@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import logo from "../../public/symbol.png";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -17,7 +17,8 @@ const AdminLogin = () => {
 
     try {
       const response = await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL}/api/v1/admin/login`,
+        // `${import.meta.env.VITE_BACKEND_URL}/api/v1/admin/login`,
+        "http://localhost:4001/api/v1/admin/login",
         {
           email,
           password,
@@ -32,7 +33,6 @@ const AdminLogin = () => {
       console.log("AdminLogin successful:", response.data);
       toast.success(response.data.message);
       navigate("/admin/Dashboard");
-
       localStorage.setItem("admin", JSON.stringify(response.data));
     } catch (error) {
       if (error.response) {

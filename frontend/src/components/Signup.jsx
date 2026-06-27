@@ -17,7 +17,8 @@ const Signup = () => {
     e.preventDefault();
     try {
       const response = await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL}/api/v1/user/signup`,
+        // `${import.meta.env.VITE_BACKEND_URL}/api/v1/user/signup`,
+        "http://localhost:4001/api/v1/user/signup",
         {
           firstName,
           lastName,

@@ -1,5 +1,5 @@
 import { User } from "../models/user.model.js";
-import bcrypt from "bcryptjs";
+// import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { z } from "zod";
 import config from "../config.js";
@@ -21,7 +21,7 @@ export const signup = async (req, res) => {
       return res.status(400).json({ errors: validateData.error.issues.map(err => err.message) })
    }
 
-   const hashPassword = await bcrypt.hash(password, 10)
+   // const hashPassword = await bcrypt.hash(password, 10)
 
 
    try {
@@ -30,7 +30,7 @@ export const signup = async (req, res) => {
          return res.status(400).json({ errors: "User Already Exists" })
       }
 
-      const newUser = new User({ firstName, lastName, email, password: hashPassword, });
+      const newUser = new User({ firstName, lastName, email, password, });
       await newUser.save();
       res.status(201).json({ message: "Signup Succeeeded", newUser });
 
@@ -47,7 +47,8 @@ export const login = async (req, res) => {
 
    try {
       const user = await User.findOne({ email: email });
-      const isPasswordCorrect = await bcrypt.compare(password, user.password)
+      const isPasswordCorrect = await (password, user.password)
+      // const isPasswordCorrect = await bcrypt.compare(password, user.password)
 
       if (!user || !isPasswordCorrect) {
          return res.status(403).json({ errors: "invalid credentials" });
@@ -67,7 +68,9 @@ export const login = async (req, res) => {
          sameSite: "Strict",
       };
 
+      
       res.cookie("jwt", token, cookieOptions);
+      
       res.status(201).json({ message: "Login Successful", user, token });
    } catch (error) {
       res.status(500).json({ errors: "Error in Login" });
